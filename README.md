@@ -1,4 +1,4 @@
-# PL Docker Boilerplate
+# NodeJs Docker Boilerplate
 - Infrastructure to setup nodejs project
 
 ## Prerequisite
