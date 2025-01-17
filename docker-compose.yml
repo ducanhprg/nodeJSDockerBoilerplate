@@ -1,0 +1,44 @@
+services:
+  request_handler:
+    build:
+      context: ${REQUEST_HANDLER_CONTEXT}
+      dockerfile: ../../configs/Dockerfile
+    container_name: ${REQUEST_HANDLER_NAME}
+    ports:
+      - "${REQUEST_HANDLER_PORT}:3000"
+    volumes:
+      - ${REQUEST_HANDLER_CONTEXT}:/usr/src/app
+    command: npm run dev
+    networks:
+      - docker-network
+
+  # address_validator:
+  #   build:
+  #     context: ${ADDRESS_VALIDATOR_CONTEXT}
+  #     dockerfile: ../../configs/Dockerfile
+  #   container_name: ${ADDRESS_VALIDATOR_NAME}
+  #   ports:
+  #     - "${ADDRESS_VALIDATOR_PORT}:3000"
+  #   volumes:
+  #    - ${ADDRESS_VALIDATOR_CONTEXT}:/usr/src/app
+  #   command: npx ts-node -r tsconfig-paths/register src/entrypoints/queueConsumer.ts
+  #   networks:
+  #     - docker-network
+
+  # cost_surcharge_collector:
+  #   build:
+  #     context: ${COST_SURCHARGE_COLLECTOR_CONTEXT}
+  #     dockerfile: ../../configs/Dockerfile
+  #   container_name: ${COST_SURCHARGE_COLLECTOR_NAME}
+  #   ports:
+  #     - "${COST_SURCHARGE_COLLECTOR_PORT}:3000"
+  #   volumes:
+  #    - ${COST_SURCHARGE_COLLECTOR_CONTEXT}:/usr/src/app
+  #   command: npx ts-node -r tsconfig-paths/register src/entrypoints/queueConsumer.ts
+  #   networks:
+  #     - docker-network
+
+networks:
+  docker-network:
+    name: ${GLOBAL_NETWORK_NAME}
+    external: true
