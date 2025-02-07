@@ -7,9 +7,11 @@ WORKDIR /usr/src/app
 ARG SERVICE_PATH
 COPY ${SERVICE_PATH}/ /usr/src/app/
 
-COPY bsCommonLibrary/ /usr/src/app/src/shared
+COPY bsCommonLibrary/shared /usr/src/app/src/shared
 
-COPY package*.json ./
+COPY ${SERVICE_PATH}/package*.json ./
+
+RUN npm install -g tsconfig-paths ts-node nodemon
 
 RUN npm install
 
