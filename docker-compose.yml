@@ -1,0 +1,58 @@
+services:
+  request_handler:
+    build:
+      context: ./sources
+      dockerfile: ../configs/Dockerfile
+      args:
+        SERVICE_PATH: ${REQUEST_HANDLER_BASE}
+    container_name: ${REQUEST_HANDLER_NAME}
+    ports:
+      - "${REQUEST_HANDLER_PORT}:3000"
+    volumes:
+      - ./sources/${REQUEST_HANDLER_BASE}:/usr/src/app
+      - ${COMMON_LIBRARY_CONTEXT}:/usr/src/app/src/shared
+    # entrypoint: ["/usr/src/app/entrypoint.sh"]
+    command: npm run dev
+    networks:
+      - docker-network
+
+  # Validator
+  address_validator:
+    build:
+      context: ./sources
+      dockerfile: ../configs/Dockerfile
+      args:
+        SERVICE_PATH: ${VALIDATOR_BASE}
+    container_name: ${VALIDATOR_NAME}
+    ports:
+      - "${VALIDATOR_PORT}:3000"
+    volumes:
+      - ./sources/${VALIDATOR_BASE}:/usr/src/app
+      - ${COMMON_LIBRARY_CONTEXT}:/usr/src/app/src/shared
+    # entrypoint: ["/usr/src/app/entrypoint.sh"]
+    command: npx ts-node -r tsconfig-paths/register src/entrypoints/queueConsumer.ts
+    networks:
+      - docker-network
+
+  # Vendors
+  vendor_gde:
+    build:
+      context: ./sources
+      dockerfile: ../configs/Dockerfile
+      args:
+        SERVICE_PATH: ${VENDOR_GDE_BASE}
+    container_name: ${VENDOR_GDE_NAME}
+    ports:
+      - "${VENDOR_GDE_PORT}:3000"
+    volumes:
+      - ./sources/${VENDOR_GDE_BASE}:/usr/src/app
+      - ${COMMON_LIBRARY_CONTEXT}:/usr/src/app/src/shared
+    # entrypoint: ["/usr/src/app/entrypoint.sh"]
+    command: npx ts-node -r tsconfig-paths/register src/entrypoints/queueConsumer.ts
+    networks:
+      - docker-network
+
+networks:
+  docker-network:
+    name: ${GLOBAL_NETWORK_NAME}
+    external: true
