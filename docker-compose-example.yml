@@ -1,44 +1,52 @@
 services:
-  request_handler:
+  pl_request_handler:
     build:
-      context: ${REQUEST_HANDLER_CONTEXT}
-      dockerfile: ../../configs/Dockerfile
-    container_name: ${REQUEST_HANDLER_NAME}
+      context: ./sources
+      dockerfile: ../configs/Dockerfile
+      args:
+        SERVICE_PATH: ${PL_REQUEST_HANDLER_BASE}
+    container_name: ${PL_REQUEST_HANDLER_NAME}
     ports:
-      - "${REQUEST_HANDLER_PORT}:3000"
+      - "${PL_REQUEST_HANDLER_PORT}:3000"
     volumes:
-      - ${REQUEST_HANDLER_CONTEXT}:/usr/src/app
+      - ./sources/${PL_REQUEST_HANDLER_BASE}:/usr/src/app
     command: npm run dev
     networks:
-      - default
+      - docker-network
 
-  vendor_consolidator:
+  # Validator
+  bs_validator:
     build:
-      context: ${VENDOR_CONSOLIDATOR_CONTEXT}
-      dockerfile: ../../configs/Dockerfile
-    container_name: ${VENDOR_CONSOLIDATOR_NAME}
+      context: ./sources
+      dockerfile: ../configs/Dockerfile
+      args:
+        SERVICE_PATH: ${VALIDATOR_BASE}
+    container_name: ${VALIDATOR_NAME}
     ports:
-      - "${VENDOR_CONSOLIDATOR_PORT}:3004"
+      - "${VALIDATOR_PORT}:3000"
     volumes:
-      - ${VENDOR_CONSOLIDATOR_CONTEXT}:/usr/src/app
+      - ./sources/${VALIDATOR_BASE}:/usr/src/app
     command: npx ts-node -r tsconfig-paths/register src/entrypoints/queueConsumer.ts
     networks:
-      - default
+      - docker-network
 
-  # cost_surcharge_collector:
-  #   build:
-  #     context: ${COST_SURCHARGE_COLLECTOR_CONTEXT}
-  #     dockerfile: ../../configs/Dockerfile
-  #   container_name: ${COST_SURCHARGE_COLLECTOR_NAME}
-  #   ports:
-  #     - "${COST_SURCHARGE_COLLECTOR_PORT}:3000"
-  #   volumes:
-  #    - ${COST_SURCHARGE_COLLECTOR_CONTEXT}:/usr/src/app
-  #   command: npx ts-node -r tsconfig-paths/register src/entrypoints/queueConsumer.ts
-  #   networks:
-  #     - docker-network
+  # Vendors
+  vendor_gde:
+    build:
+      context: ./sources
+      dockerfile: ../configs/Dockerfile
+      args:
+        SERVICE_PATH: ${VENDOR_GDE_BASE}
+    container_name: ${VENDOR_GDE_NAME}
+    ports:
+      - "${VENDOR_GDE_PORT}:3000"
+    volumes:
+      - ./sources/${VENDOR_GDE_BASE}:/usr/src/app
+    command: npx ts-node -r tsconfig-paths/register src/entrypoints/queueConsumer.ts
+    networks:
+      - docker-network
 
 networks:
-  default:
+  docker-network:
     name: ${GLOBAL_NETWORK_NAME}
     external: true
