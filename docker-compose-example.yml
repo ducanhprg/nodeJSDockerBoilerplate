@@ -20,7 +20,7 @@ services:
     ports:
       - "${VENDOR_CONSOLIDATOR_PORT}:3004"
     volumes:
-     - ${VENDOR_CONSOLIDATOR_CONTEXT}:/usr/src/app
+      - ${VENDOR_CONSOLIDATOR_CONTEXT}:/usr/src/app
     command: npx ts-node -r tsconfig-paths/register src/entrypoints/queueConsumer.ts
     networks:
       - default
