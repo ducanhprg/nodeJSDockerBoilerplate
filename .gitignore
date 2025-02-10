@@ -1,5 +1,7 @@
 .idea
 .vscode
+.history
+docker-compose.yml
 docs
 dist/
 .env
