@@ -11,7 +11,7 @@ COPY bsCommonLibrary/shared /usr/src/app/src/shared
 
 COPY ${SERVICE_PATH}/package*.json ./
 
-RUN npm install -g tsconfig-paths ts-node nodemon
+RUN npm install -g tsconfig-paths ts-node nodemon pm2
 
 RUN npm install
 

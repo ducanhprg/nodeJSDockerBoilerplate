@@ -20,13 +20,13 @@ services:
       context: ./sources
       dockerfile: ../configs/Dockerfile
       args:
-        SERVICE_PATH: ${VALIDATOR_BASE}
-    container_name: ${VALIDATOR_NAME}
+        SERVICE_PATH: ${BS_VALIDATOR_BASE}
+    container_name: ${BS_VALIDATOR_NAME}
     ports:
-      - "${VALIDATOR_PORT}:3000"
+      - "${BS_VALIDATOR_PORT}:3000"
     volumes:
-      - ./sources/${VALIDATOR_BASE}:/usr/src/app
-    command: npx ts-node -r tsconfig-paths/register src/entrypoints/queueConsumer.ts
+      - ./sources/${BS_VALIDATOR_BASE}:/usr/src/app
+    command: ["pm2-runtime", "start", "process.json"]
     networks:
       - docker-network
 
@@ -42,7 +42,7 @@ services:
       - "${VENDOR_GDE_PORT}:3000"
     volumes:
       - ./sources/${VENDOR_GDE_BASE}:/usr/src/app
-    command: npx ts-node -r tsconfig-paths/register src/entrypoints/queueConsumer.ts
+    command: ["pm2-runtime", "start", "process.json"]
     networks:
       - docker-network
 
