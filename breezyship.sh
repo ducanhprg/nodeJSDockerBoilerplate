@@ -35,8 +35,8 @@ initialize_services() {
                     rm -rf "$SHARED_FOLDER"
                 fi
 
-                echo "🔗 Creating symlink: $SHARED_FOLDER -> $COMMON_LIBRARY/shared"
-                ln -s "$(realpath --relative-to="$SERVICE/src" "$COMMON_LIBRARY/shared")" "$SHARED_FOLDER"
+                echo "🔗 Copying files: $COMMON_LIBRARY/shared -> $SHARED_FOLDER"
+                cp -r "$COMMON_LIBRARY/shared" "$SHARED_FOLDER"
             fi
 
             if [ -f "$SERVICE/package.json" ]; then
