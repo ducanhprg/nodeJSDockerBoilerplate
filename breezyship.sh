@@ -30,14 +30,13 @@ initialize_services() {
             SHARED_FOLDER="$SERVICE/src/shared"
 
             if [ "$FRESH" == "true" ]; then
-                echo "🗑️  Removing existing shared folder or symlink in $SHARED_FOLDER"
-                rm -rf "$SHARED_FOLDER"
-
-                echo "🔗 Copy all files: $COMMON_LIBRARY/shared -> $SHARED_FOLDER"
-                cp -r "$COMMON_LIBRARY/shared" "$SHARED_FOLDER"
+                if [ -e "$SHARED_FOLDER" ] || [ -L "$SHARED_FOLDER" ]; then
+                    echo "🗑️  Removing existing shared folder or symlink in $SHARED_FOLDER"
+                    rm -rf "$SHARED_FOLDER"
+                fi
 
                 echo "🔗 Creating symlink: $SHARED_FOLDER -> $COMMON_LIBRARY/shared"
-                ln -s ../../bsCommonLibrary/shared "$SHARED_FOLDER"
+                ln -s "$(realpath --relative-to="$SERVICE/src" "$COMMON_LIBRARY/shared")" "$SHARED_FOLDER"
             fi
 
             if [ -f "$SERVICE/package.json" ]; then
