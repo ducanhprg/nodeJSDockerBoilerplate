@@ -3,7 +3,7 @@
 set -e
 
 COMMAND=$1
-SERVICE_NAME=$2 
+SERVICE_NAME=$2
 FLAGS="${@:2}"
 
 COMMON_LIBRARY="./sources/bsCommonLibrary"
@@ -43,7 +43,7 @@ initialize_services() {
                     rm -rf "$SHARED_FOLDER"
                 fi
                 echo "🔗 Creating symlink: $SHARED_FOLDER -> $COMMON_LIBRARY/shared"
-                ln -s "$(realpath --relative-to="$SERVICE/src" "$COMMON_LIBRARY/shared")" "$SHARED_FOLDER"
+                ln -s "../../bsCommonLibrary/shared" "$SHARED_FOLDER"
 
                 if [ -f "$SERVICE_PACKAGE_JSON" ] || [ -L "$SERVICE_PACKAGE_JSON" ]; then
                     echo "🗑️  Removing existing package.json in $SERVICE"
@@ -126,7 +126,7 @@ case "$COMMAND" in
     up) start_services ;;
     down) stop_services ;;
     build) build_services ;;
-    restart) 
+    restart)
         if [ -n "$SERVICE_NAME" ]; then
             restart_specific_service
         else
@@ -134,7 +134,7 @@ case "$COMMAND" in
         fi
     ;;
     help) show_help ;;
-    *) 
+    *)
         echo "❌ Unknown command: $COMMAND"
         show_help
         exit 1
