@@ -42,8 +42,8 @@ initialize_services() {
                     echo "🗑️  Removing existing shared folder or symlink in $SHARED_FOLDER"
                     rm -rf "$SHARED_FOLDER"
                 fi
-                echo "🔗 Creating symlink: $SHARED_FOLDER -> $COMMON_LIBRARY/shared"
-                ln -s "../../bsCommonLibrary/shared" "$SHARED_FOLDER"
+                echo "🔗 Copying files: $SHARED_FOLDER -> $COMMON_LIBRARY/shared"
+                cp -r "$COMMON_LIBRARY/shared" "$SHARED_FOLDER"
 
                 if [ -f "$SERVICE_PACKAGE_JSON" ] || [ -L "$SERVICE_PACKAGE_JSON" ]; then
                     echo "🗑️  Removing existing package.json in $SERVICE"
