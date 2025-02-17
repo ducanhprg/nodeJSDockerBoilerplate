@@ -10,6 +10,7 @@ services:
       - "${PL_REQUEST_HANDLER_PORT}:3000"
     volumes:
       - ./sources/${PL_REQUEST_HANDLER_BASE}:/usr/src/app
+      - ./sources/bsCommonLibrary:/usr/src/bsCommonLibrary
     command: npm run dev
     networks:
       - docker-network
@@ -26,6 +27,7 @@ services:
       - "${BS_VALIDATOR_PORT}:3000"
     volumes:
       - ./sources/${BS_VALIDATOR_BASE}:/usr/src/app
+      - ./sources/bsCommonLibrary:/usr/src/bsCommonLibrary
     command: ["pm2-runtime", "start", "process.json"]
     networks:
       - docker-network
@@ -42,6 +44,7 @@ services:
       - "${VENDOR_GDE_PORT}:3000"
     volumes:
       - ./sources/${VENDOR_GDE_BASE}:/usr/src/app
+      - ./sources/bsCommonLibrary:/usr/src/bsCommonLibrary
     command: ["pm2-runtime", "start", "process.json"]
     networks:
       - docker-network
