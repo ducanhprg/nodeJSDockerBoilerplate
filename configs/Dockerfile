@@ -9,7 +9,8 @@ COPY ${SERVICE_PATH}/ /usr/src/app/
 
 COPY bsCommonLibrary/shared /usr/src/app/src/shared
 
-COPY ${SERVICE_PATH}/package*.json ./
+COPY bsCommonLibrary/package*.json ./
+# COPY ${SERVICE_PATH}/package*.json ./
 
 RUN npm install -g tsconfig-paths ts-node nodemon pm2
 

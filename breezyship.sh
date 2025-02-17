@@ -28,22 +28,47 @@ initialize_services() {
     for SERVICE in "$SERVICES_DIR"/*; do
         if [ -d "$SERVICE/src" ]; then
             SHARED_FOLDER="$SERVICE/src/shared"
+            SERVICE_PACKAGE_JSON="$SERVICE/package.json"
+            SERVICE_TSCONFIG_JSON="$SERVICE/tsconfig.json"
+            SERVICE_NODE_MODULES="$SERVICE/node_modules"
+            COMMON_PACKAGE_JSON="$COMMON_LIBRARY/package.json"
+            COMMON_TSCONFIG_JSON="$COMMON_LIBRARY/tsconfig.json"
 
             if [ "$FRESH" == "true" ]; then
+                echo "🗑️  Removing existing node_modules"
+                rm -rf "$SERVICE_NODE_MODULES"
+
                 if [ -e "$SHARED_FOLDER" ] || [ -L "$SHARED_FOLDER" ]; then
                     echo "🗑️  Removing existing shared folder or symlink in $SHARED_FOLDER"
                     rm -rf "$SHARED_FOLDER"
                 fi
+                echo "🔗 Creating symlink: $SHARED_FOLDER -> $COMMON_LIBRARY/shared"
+                ln -s "$(realpath --relative-to="$SERVICE/src" "$COMMON_LIBRARY/shared")" "$SHARED_FOLDER"
 
-                echo "🔗 Copying files: $COMMON_LIBRARY/shared -> $SHARED_FOLDER"
-                cp -r "$COMMON_LIBRARY/shared" "$SHARED_FOLDER"
-            fi
+                if [ -f "$SERVICE_PACKAGE_JSON" ] || [ -L "$SERVICE_PACKAGE_JSON" ]; then
+                    echo "🗑️  Removing existing package.json in $SERVICE"
+                    rm -rf "$SERVICE_PACKAGE_JSON"
+                fi
+                if [ -f "$COMMON_PACKAGE_JSON" ]; then
+                    echo "🔗 Copying files: $SERVICE_PACKAGE_JSON -> $COMMON_PACKAGE_JSON"
+                    cp -r "$COMMON_PACKAGE_JSON" "$SERVICE_PACKAGE_JSON"
+                fi
 
-            if [ -f "$SERVICE/package.json" ]; then
-                echo "📦 Running npm install in $SERVICE..."
-                (cd "$SERVICE" && npm install)
-            else
-                echo "⚠️  Skipping npm install: No package.json found in $SERVICE"
+                if [ -f "$SERVICE_TSCONFIG_JSON" ] || [ -L "$SERVICE_TSCONFIG_JSON" ]; then
+                    echo "🗑️  Removing existing tsconfig.json in $SERVICE"
+                    rm -rf "$SERVICE_TSCONFIG_JSON"
+                fi
+                if [ -f "$COMMON_TSCONFIG_JSON" ]; then
+                    echo "🔗 Copying files: $SERVICE_TSCONFIG_JSON -> $COMMON_TSCONFIG_JSON"
+                    cp -r "$COMMON_TSCONFIG_JSON" "$SERVICE_TSCONFIG_JSON"
+                fi
+
+                if [ -f "$COMMON_PACKAGE_JSON" ]; then
+                    echo "📦 Running npm install in $SERVICE..."
+                    (cd "$SERVICE" && npm install)
+                else
+                    echo "⚠️  Skipping npm install: No package.json found in $COMMON_LIBRARY"
+                fi
             fi
         fi
     done
@@ -64,6 +89,7 @@ stop_services() {
 
 build_services() {
     echo "🔨 Building Docker images..."
+    initialize_services
     docker-compose build $FLAGS
 }
 
