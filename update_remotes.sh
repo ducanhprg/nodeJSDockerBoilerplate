@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# Define repository mappings
+START_DIR=$(pwd)
+
 REPO_MAPPINGS=(
-    "$(pwd) git@gitlab.com:nodejs-brz/bsboilerplate.git"  # Convert "." to absolute path
+    ". git@gitlab.com:nodejs-brz/bsboilerplate.git"
     "./sources/bsCommonLibrary git@gitlab.com:nodejs-brz/bscommonlibrary.git"
     "./sources/bsValidator git@gitlab.com:nodejs-brz/bsvalidator.git"
     "./sources/plRequestHandler git@gitlab.com:nodejs-brz/plrequesthandler.git"
@@ -18,7 +19,7 @@ for MAPPING in "${REPO_MAPPINGS[@]}"; do
     GITLAB_URL=$(echo "$MAPPING" | cut -d ' ' -f2)
 
     if [[ "$LOCAL_PATH" == "." ]]; then
-        LOCAL_PATH="$(pwd)"
+        LOCAL_PATH="$START_DIR"
     fi
 
     if [[ -d "$LOCAL_PATH" ]]; then
@@ -36,6 +37,8 @@ for MAPPING in "${REPO_MAPPINGS[@]}"; do
     else
         echo "❌ Directory not found: $LOCAL_PATH"
     fi
+
+    cd "$START_DIR" || exit
 done
 
 echo "🎉 All repositories have been checked and updated where applicable!"
